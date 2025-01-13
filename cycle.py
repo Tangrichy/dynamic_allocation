@@ -136,8 +136,8 @@ fitted_values_freq_based = multi_harmonic_model(t_values, A1_freq, B1_freq, f1_f
 df_cycle["Fourior"] = fitted_values_freq_based
 
 plt.figure(num = 1, figsize = (20,6))
-plt.plot(df_cycle["Date"],df_cycle["Cycle"], label =  "Market")
-plt.plot(df_cycle["Date"],df_cycle["Fourior"], label =  "Market")
+plt.plot(df_cycle["Date"],df_cycle["Cycle"], label =  "Market Factor")
+plt.plot(df_cycle["Date"],df_cycle["Fourior"], label =  "Market Fitted")
 plt.legend()
 plt.grid()
 plt.title("Asset Cycle")
