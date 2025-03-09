@@ -1,21 +1,52 @@
 # Dynamic asset allocation
 
+Demo版仅使用现在国君期货提供的宏观数据，完成基本的流程
+
 ## 主要思路
 
-主要思路来源于 [__Dynamic Asset Allocation Using Machine Learning: Seeing the Forest for the Trees__](https://www.pm-research.com/content/iijpormgmt/50/5/132)
+主要思路主要是来源于华泰期货 __关于周期的资产组合__ 和 [__Dynamic Asset Allocation Using Machine Learning: Seeing the Forest for the Trees__](https://www.pm-research.com/content/iijpormgmt/50/5/132) 两个资料中获得
 
-1. 构建Growth factor增长变 Inflation factor通胀变量 Policy factor政策变量 Risk Appetite Indicator风险变量
-2. 观测不同时期，资产未来12个月的表现
-3. 构建随机森林模型
-4. 回测
+主要的资产
+1. 权益类：沪深300 中证500 中证1000
+2. 债券：两年期国债 十年期国债 三十年期国债
+3. 商品：沪铜 原油
+4. 贵金属：黄金
+5. 外汇： 美元兑人民币
+
+主要是从四个方面对资产进行打分，并且根据打分加权的分数和风险平价获得资产的权重。四个方面分别是：
+1. 各类资产的周期；
+2. 按照梅林时钟的思路，构建宏观因子，探究各类宏观因子在不同的周期对各类资产分别的影响；根据因子的数据对资产进行打分；
+3. 机器学习的路径，提前对资产数据进行标签，如股票一个月以后上涨为 __1__ 下跌为 __0__ ，各类经济数据全部放入机器学习中，根据模型预测短期内的组合可能性，对各类资产进行打分；
+4. 短期指标，根据技术性指标如MACD对各类资产进行打分。
 
 ## 过程
 
-1. 变量构建
-   
-   1.1 各种高频变量全部输入
-   
-   1.2 按照文献中，分别做Z-score组合
-2. 分别使用1个月2个月3个月资产表现进行标签
-3. 构建随机森林和Xgboost模型
+### 资产周期
 
+1. 收集全球各类资产，近20年数据
+2. 按照资产类别进行PCA降维，只使用第一主成分，使用Z-score对各类资产的第一成分进行标准化
+3. 平均权重各类资产的标准化以后第一成分
+4. 使用Harmonic去模拟
+
+![Fitted](./result/model.png)
+
+
+### 宏观因子
+
+1. 收集合适的宏观数据
+2. 调整滞后数，使用DWT方法
+3. 使用批量标准化Batch Standard
+4. 变量构建，根据OCED的方法，使用平均加权
+5. 使用Markov Switch Model去判断顶点和底点
+6. 根据顶点和底点，划分不同的区域 \
+   研究不同区域资产表现情况
+
+### 宏观因子和资产
+
+两个部分
+
+1. 宏观因子 \
+   根据宏观因子的不同周期，不同资产进行打分；
+
+2. 机器学习 \
+   根据模型的预测对资产进行打分。
